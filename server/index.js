@@ -3,6 +3,8 @@ const app = express();
 const path = require('path');
 const { Company, Employee, syncAndSeed } = require('./db/db.js');
 
+app.use(express.json());
+
 app.use('/dist', express.static(path.join(__dirname, '../dist')));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, '../index.html')));
@@ -24,6 +26,16 @@ app.get('/api/employees', async (req, res, next) => {
     next(ex);
   }
 });
+
+app.post('/api/employees', async (req, res, next) => {
+  try {
+    res.status(201).send(await Employee.create(req.body));
+  }
+  catch(ex) {
+    next(ex);
+  }
+});
+
 
 const init = async () => {
   try {
