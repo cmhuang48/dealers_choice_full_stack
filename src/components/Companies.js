@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const Companies = ({companies}) => {
   return (
@@ -19,4 +20,4 @@ const Companies = ({companies}) => {
   )
 }
 
-export default Companies;
+export default connect(state => state)(Companies);
