@@ -6,6 +6,7 @@ import logger from 'redux-logger';
 export const LOAD_COMPANIES = 'LOAD_COMPANIES';
 export const LOAD_EMPLOYEES = 'LOAD_EMPLOYEES';
 export const CREATE_EMPLOYEE = 'CREATE_EMPLOYEE';
+export const DESTROY_EMPLOYEE = 'DESTROY_EMPLOYEE';
 export const SET_VIEW = 'SET_VIEW';
 
 const companiesReducer = (state = [], action) => {
@@ -21,6 +22,9 @@ const employeesReducer = (state = [], action) => {
   }
   if (action.type === CREATE_EMPLOYEE) {
     state = [...state, action.employee];
+  }
+  if (action.type === DESTROY_EMPLOYEE) {
+    state = state.filter(employee => employee.id !== action.employee.id);
   }
   return state;
 };
@@ -60,14 +64,26 @@ export const loadEmployees = () => {
   };
 };
 
-export const createEmployee = (name) => {
+export const createEmployee = (name, history) => {
   return async (dispatch) => {
     const employee = (await axios.post('/api/employees', { name })).data;
     dispatch({
       type: CREATE_EMPLOYEE,
       employee
     });
+    history.push(`/employees/${employee.id}`);
   };
 };
+
+export const destroyEmployee = (employee, history) => {
+  return async (dispatch) => {
+    await axios.delete(`/api/employees/${employee.id}`);
+    dispatch({
+      type: DESTROY_EMPLOYEE,
+      employee
+    });
+    history.push('/employees');
+  }
+}
 
 export default store;

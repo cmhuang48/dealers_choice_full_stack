@@ -2,8 +2,16 @@ import React from 'react';
 import Nav from './Nav';
 import Companies from './components/Companies';
 import Employees from './components/Employees';
+import Employee from './components/Employee';
 import { loadCompanies, loadEmployees, SET_VIEW } from './store';
 import { connect } from 'react-redux'; 
+import { HashRouter as Router, Route } from 'react-router-dom';
+
+const Home = () => {
+  return (
+    <hr />
+  )
+}
 
 class _App extends React.Component {
   componentDidMount () {
@@ -16,12 +24,16 @@ class _App extends React.Component {
   render () {
     const { view } = this.props;
     return (
-      <div>
-        <h1>Acme Companies</h1>
-        <Nav />
-        { view === 'companies' && <Companies /> }
-        { view === 'employees' && <Employees /> }
-      </div>
+      <Router>
+        <div>
+          <h1>Acme Companies</h1>
+          <Route component={Home} path='/' exact />
+          <Route component={Nav} />
+          <Route component={Companies} path='/companies' exact />
+          <Route component={Employees} path='/employees' exact />
+          <Route component={Employee} path='/employees/:id' exact />
+        </div>
+      </Router>
     )
   }
 };

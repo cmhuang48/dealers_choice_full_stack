@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-const Nav = ({companies, employees}) => {
+const Nav = ({companies, employees, location: { pathname }}) => {
   return (
     <nav>
-      <a href='#companies'>Companies ({companies.length})</a>
-      <a href='#employees'>Employees ({employees.length})</a>
+      <Link to='/' className={pathname === '/' ? 'selected' : ''}>Home</Link>
+      <Link to='/companies'className={pathname === '/companies' ? 'selected' : ''}>Companies ({companies.length})</Link>
+      <Link to='/employees'className={pathname === '/employees' ? 'selected' : ''}>Employees ({employees.length})</Link>
     </nav>
   )
 };

@@ -36,6 +36,16 @@ app.post('/api/employees', async (req, res, next) => {
   }
 });
 
+app.delete('/api/employees/:id', async (req, res, next) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+    await employee.destroy();
+    res.sendStatus(204);
+  }
+  catch(ex) {
+    next(ex);
+  }
+});
 
 const init = async () => {
   try {
