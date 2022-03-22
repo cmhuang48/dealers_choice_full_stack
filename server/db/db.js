@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/dealers_choice_full_stack');
 const faker = require('faker');
 
-const Company = sequelize.define('company', {
+const Orchestra = sequelize.define('orchestra', {
   name: {
     type: Sequelize.DataTypes.STRING(),
     allowNull: false,
@@ -33,8 +33,22 @@ const Company = sequelize.define('company', {
   }
 });
 
-const Employee = sequelize.define('employee', {
+const Musician = sequelize.define('musician', {
   name: {
+    type: Sequelize.DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  instrument: {
+    type: Sequelize.DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  phone: {
     type: Sequelize.DataTypes.STRING,
     allowNull: false,
     validate: {
@@ -43,46 +57,46 @@ const Employee = sequelize.define('employee', {
   }
 })
 
-Employee.belongsTo(Company);
-Company.hasMany(Employee);
+Musician.belongsTo(Orchestra);
+Orchestra.hasMany(Musician);
 
 const syncAndSeed = async () => {
   await sequelize.sync({ force: true });
-  const [company1, company2, company3, company4, company5] = await Promise.all([
-    Company.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
-    Company.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
-    Company.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
-    Company.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
-    Company.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()})
+  const [orchestra1, orchestra2, orchestra3, orchestra4, orchestra5] = await Promise.all([
+    Orchestra.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
+    Orchestra.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
+    Orchestra.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
+    Orchestra.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()}),
+    Orchestra.create({name: faker.company.companyName(), catchPhrase: faker.company.catchPhrase(), description: faker.lorem.paragraph(), phone: faker.phone.phoneNumber()})
   ]);
-  const [employee1, employee2, employee3, employee4, employee5, employee6, employee7, employee8] = await Promise.all([
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`}),
-    Employee.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`})
+  const [musician1, musician2, musician3, musician4, musician5, musician6, musician7, musician8] = await Promise.all([
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'violin', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'violin', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'cello', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'viola', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'violin', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'cello', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'bass', phone: faker.phone.phoneNumber()}),
+    Musician.create({name: `${faker.name.firstName()} ${faker.name.lastName()}`, instrument: 'viola', phone: faker.phone.phoneNumber()})
   ]);
-  employee1.companyId = company1.id;
-  employee2.companyId = company2.id;
-  employee3.companyId = company2.id;
-  employee4.companyId = company3.id;
-  employee5.companyId = company4.id;
-  employee6.companyId = company4.id;
-  employee7.companyId = company4.id;
-  employee8.companyId = company5.id;
+  musician1.companyId = orchestra1.id;
+  musician2.orchestraId = orchestra2.id;
+  musician3.orchestraId = orchestra2.id;
+  musician4.orchestraId = orchestra3.id;
+  musician5.orchestraId = orchestra4.id;
+  musician6.orchestraId = orchestra4.id;
+  musician7.orchestraId = orchestra4.id;
+  musician8.orchestraId = orchestra5.id;
   await Promise.all([
-    employee1.save(),
-    employee2.save(),
-    employee3.save(),
-    employee4.save(),
-    employee5.save(),
-    employee6.save(),
-    employee7.save(),
-    employee8.save()
+    musician1.save(),
+    musician2.save(),
+    musician3.save(),
+    musician4.save(),
+    musician5.save(),
+    musician6.save(),
+    musician7.save(),
+    musician8.save()
   ]);
 };
 
-module.exports = { Company, Employee, syncAndSeed };
+module.exports = { Orchestra, Musician, syncAndSeed };

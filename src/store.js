@@ -3,87 +3,93 @@ import axios from 'axios';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
-export const LOAD_COMPANIES = 'LOAD_COMPANIES';
-export const LOAD_EMPLOYEES = 'LOAD_EMPLOYEES';
-export const CREATE_EMPLOYEE = 'CREATE_EMPLOYEE';
-export const DESTROY_EMPLOYEE = 'DESTROY_EMPLOYEE';
-export const SET_VIEW = 'SET_VIEW';
+export const LOAD_ORCHESTRAS = 'LOAD_ORCHESTRAS';
+export const LOAD_MUSICIANS = 'LOAD_MUSICIANS';
+export const CREATE_MUSICIAN = 'CREATE_MUSICIAN';
+export const DESTROY_MUSICIAN = 'DESTROY_MUSICIAN';
+export const UPDATE_MUSICIAN = 'UPDATE_MUSICIAN';
 
-const companiesReducer = (state = [], action) => {
-  if (action.type === LOAD_COMPANIES) {
-    state = action.companies;
+const orchestrasReducer = (state = [], action) => {
+  if (action.type === LOAD_ORCHESTRAS) {
+    state = action.orchestras;
   }
   return state;
 };
 
-const employeesReducer = (state = [], action) => {
-  if (action.type === LOAD_EMPLOYEES) {
-    state = action.employees;
+const musiciansReducer = (state = [], action) => {
+  if (action.type === LOAD_MUSICIANS) {
+    state = action.musicians;
   }
-  if (action.type === CREATE_EMPLOYEE) {
-    state = [...state, action.employee];
+  if (action.type === CREATE_MUSICIAN) {
+    state = [...state, action.musician];
   }
-  if (action.type === DESTROY_EMPLOYEE) {
-    state = state.filter(employee => employee.id !== action.employee.id);
+  if (action.type === DESTROY_MUSICIAN) {
+    state = state.filter(musician => musician.id !== action.musician.id);
   }
-  return state;
-};
-
-const viewReducer = (state = '', action) => {
-  if (action.type === SET_VIEW) {
-    state = action.view;
+  if (action.type === UPDATE_MUSICIAN) {
+    state = state.map(musician => musician.id !== action.musician.id ? musician : action.musician);
   }
   return state;
 };
 
 const reducer = combineReducers({
-  companies: companiesReducer,
-  employees: employeesReducer,
-  view: viewReducer
+  orchestras: orchestrasReducer,
+  musicians: musiciansReducer,
 });
 
 const store = createStore(reducer, applyMiddleware(thunk, logger));
 
-export const loadCompanies = () => {
+export const loadOrchestras = () => {
   return async (dispatch) => {
-    const companies = (await axios.get('/api/companies')).data;
+    const orchestras = (await axios.get('/api/orchestras')).data;
     dispatch({
-      type: LOAD_COMPANIES,
-      companies
+      type: LOAD_ORCHESTRAS,
+      orchestras
     });
   };
 };
 
-export const loadEmployees = () => {
+export const loadMusicians = () => {
   return async (dispatch) => {
-    const employees = (await axios.get('/api/employees')).data;
+    const musicians = (await axios.get('/api/musicians')).data;
     dispatch({
-      type: LOAD_EMPLOYEES,
-      employees
+      type: LOAD_MUSICIANS,
+      musicians
     });
   };
 };
 
-export const createEmployee = (name, history) => {
+export const createMusician = (name, instrument, phone, history) => {
   return async (dispatch) => {
-    const employee = (await axios.post('/api/employees', { name })).data;
+    const musician = (await axios.post('/api/musicians', { name, instrument, phone })).data;
     dispatch({
-      type: CREATE_EMPLOYEE,
-      employee
+      type: CREATE_MUSICIAN,
+      musician
     });
-    history.push(`/employees/${employee.id}`);
+    history.push(`/musicians/${musician.id}`);
   };
 };
 
-export const destroyEmployee = (employee, history) => {
+export const destroyMusician = (musician, history) => {
   return async (dispatch) => {
-    await axios.delete(`/api/employees/${employee.id}`);
+    await axios.delete(`/api/musicians/${musician.id}`);
     dispatch({
-      type: DESTROY_EMPLOYEE,
-      employee
+      type: DESTROY_MUSICIAN,
+      musician
     });
-    history.push('/employees');
-  }
-}
+    history.push('/musicians');
+  };
+};
+
+export const updateMusician = (id, name, instrument, phone, history) => {
+  return async (dispatch) => {
+    const musician = (await axios.put(`/api/musicians/${id}`, { name, instrument, phone })).data;
+    dispatch({
+      type: UPDATE_MUSICIAN,
+      musician
+    });
+    history.push('/musicians');
+  };
+};
 
 export default store;
