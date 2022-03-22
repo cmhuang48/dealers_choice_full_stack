@@ -1,4 +1,5 @@
 import React from 'react';
+import Home from './Home';
 import Nav from './Nav';
 import Orchestras from './components/Orchestras';
 import Orchestra from './components/Orchestra';
@@ -9,12 +10,6 @@ import Update from './components/Update';
 import { loadOrchestras, loadMusicians } from './store';
 import { connect } from 'react-redux'; 
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-
-const Home = () => {
-  return (
-    <hr />
-  )
-}
 
 class _App extends React.Component {
   componentDidMount () {
@@ -37,8 +32,8 @@ class _App extends React.Component {
           <Route component={Update} path='/musicians/:id/update' exact />
         </div>
       </Router>
-    )
-  }
+    );
+  };
 };
 
 const mapStateToProps = (state) => state;
